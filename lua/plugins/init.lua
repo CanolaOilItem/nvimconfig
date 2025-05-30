@@ -12,6 +12,10 @@ return {
 				"markdown_inline",
 			},
 			auto_install = true,
+			highlight = {
+				enable = true,
+				use_languagetree = true,
+			},
 		},
 	},
 	{
@@ -28,9 +32,25 @@ return {
 		},
 	},
 	{
-		"williamboman/mason.nvim",
+		"mason-org/mason.nvim",
 		lazy = false,
 		opts = {},
+	},
+	{
+		"mason-org/mason-lspconfig.nvim",
+		lazy = false,
+		dependencies = {
+			{ "mason-org/mason.nvim", opts = {} },
+			"neovim/nvim-lspconfig",
+		},
+		opts = {
+			ensure_installed = {
+				"lua_ls",
+				"rust_analyzer",
+				"clangd",
+			},
+			automatic_enable = false,
+		},
 	},
 	{
 		"nvim-lualine/lualine.nvim",
@@ -40,6 +60,13 @@ return {
 			options = {
 				section_separators = { left = "", right = "" },
 				globalstatus = true,
+			},
+			sections = {
+				lualine_x = {
+					'encoding',
+					'lsp_status',
+					'filetype',
+				},
 			},
 		},
 		config = function(_, opts)
@@ -78,24 +105,62 @@ return {
 		keys = function(_, keys)
 			local bt = require("telescope.builtin")
 			local maps = {
-				{ "<leader>ff", bt.find_files, { "n", "v" } },
-				{ "<leader>fw", bt.live_grep, { "n" } },
-				{ "<leader>fb", bt.buffers, { "n" } },
-				{ "<leader>fb", bt.buffers, { "n" } },
-				{ "<leader>fo", bt.oldfiles, { "n" } },
+				{ "<leader>ff", bt.find_files,            { "n", "v" } },
+				{ "<leader>fw", bt.live_grep,             { "n" } },
+				{ "<leader>fb", bt.buffers,               { "n" } },
+				{ "<leader>fb", bt.buffers,               { "n" } },
+				{ "<leader>fo", bt.oldfiles,              { "n" } },
 				-- LSP
-				{ "<leader>fr", bt.lsp_references, { "n" }, { desc = "Find References" } },
-				{ "<leader>fs", bt.lsp_document_symbols, { "n" }, { desc = "Find Document Symbols" } },
-				{ "<leader>fS", bt.lsp_workspace_symbols, { "n" }, { desc = { "Find Workspace Symbols" } } },
-				{ "<leader>fd", bt.lsp_definitions, { "n" }, { desc = { "Find Definitions" } } },
-				{ "<leader>ft", bt.lsp_type_definitions, { "n" }, { desc = { "Find Type" } } },
+				{ "<leader>fr", bt.lsp_references,        { "n" },     { desc = "Find References" } },
+				{ "<leader>fs", bt.lsp_document_symbols,  { "n" },     { desc = "Find Document Symbols" } },
+				{ "<leader>fS", bt.lsp_workspace_symbols, { "n" },     { desc = { "Find Workspace Symbols" } } },
+				{ "<leader>fd", bt.lsp_definitions,       { "n" },     { desc = { "Find Definitions" } } },
+				{ "<leader>ft", bt.lsp_type_definitions,  { "n" },     { desc = { "Find Type" } } },
 			}
 			return vim.tbl_deep_extend("force", keys, maps)
 		end,
+		config = function(_, opts)
+			-- Display entry text after two tabs as comment.
+			-- Used to display file paths as filename followed by greyed-out path.
+			-- https://github.com/nvim-telescope/telescope.nvim/issues/2014#issuecomment-1873229658
+			vim.api.nvim_create_autocmd("FileType", {
+				pattern = "TelescopeResults",
+				callback = function(ctx)
+					vim.api.nvim_buf_call(ctx.buf, function()
+						vim.fn.matchadd("TelescopeParent", "\t\t.*$")
+						vim.api.nvim_set_hl(0, "TelescopeParent", { link = "Comment" })
+					end)
+				end,
+			})
+
+			require('telescope').setup(opts)
+		end,
 		opts = {
+			defaults = {
+				path_display = function(_, path)
+					local tail = vim.fs.basename(path)
+					local parent = vim.fs.dirname(path)
+					if parent == "." then
+						return tail
+					else
+						return string.format("%s\t\t%s", tail, parent)
+					end
+				end,
+				file_ignore_patterns = { "^.git/" }
+			},
 			pickers = {
 				find_files = {
-					theme = "dropdown",
+					-- theme = "dropdown",
+					find_command = {
+						-- "rg",
+						-- "--files",
+						-- "--hidden",
+						-- "--no-ignore-vcs",
+						'fd',
+						'-I',
+						'-tf',
+						'-tl',
+					},
 				},
 			},
 		},
@@ -150,6 +215,9 @@ return {
 			formatters_by_ft = {
 				lua = { "stylua" },
 				rust = { "rustfmt", lsp_format = "fallback" },
+				cpp = { "clang-format" },
+				c = { "clang-format" },
+				h = { "clang-format" },
 			},
 			default_format_opts = {
 				lsp_format = "fallback",
@@ -222,7 +290,7 @@ return {
 		lazy = false,
 		opts = {},
 		config = function(_, _)
-			vim.api.nvim_set_hl(0, "ExtraWhitespace", { fg = "#111111", bg = "#111111" })
+			vim.api.nvim_set_hl(0, "ExtraWhitespace", { fg = "#EEEEEE", bg = "#EEEEEE" })
 		end,
 	},
 	{
@@ -238,5 +306,82 @@ return {
 				desc = "Buffer Local Keymaps (which-key)",
 			},
 		},
+	},
+	{
+		'ggandor/leap.nvim',
+		lazy = false,
+		config = function()
+			local leap = require 'leap'
+			leap.add_default_mappings()
+			leap.opts.case_sensitive = true
+		end,
+		dependencies = {
+			'tpope/vim-repeat'
+		},
+	},
+	{
+		'dhananjaylatkar/cscope_maps.nvim',
+		dependencies = {
+			'nvim-telescope/telescope.nvim',
+			'ludvicchabant/vim-gutentags',
+		},
+		opts = {
+			skip_input_prompt = true,
+			cscope = {
+				-- db_file = "/home/awojcik/cscope/cscope.out",
+				picker = "telescope",
+				skip_picker_for_single_result = true,
+				statusline_indicator = true,
+				project_rooter = {
+				    enable = true,
+				    change_cwd = false,
+				}
+			}
+		},
+		-- ft = {
+		--     "cpp", "c", "h", "hpp"
+		-- },
+		-- keys = {
+		--     "<leader>cb",
+		--     "<leader>cs",
+		--     "<leader>cs",
+		-- },
+		lazy = false,
+	},
+	{
+		"ludovicchabant/vim-gutentags",
+		init = function()
+			vim.g.gutentags_modules = { "cscope_maps" } -- This is required. Other config is optional
+			vim.g.gutentags_cscope_build_inverted_index_maps = 1
+			vim.g.gutentags_cache_dir = vim.fn.expand("~/code/.gutentags")
+			vim.g.gutentags_file_list_command = "fd -e c -e h"
+			-- vim.g.gutentags_trace = 1
+		end,
+	},
+	{
+		'MeanderingProgrammer/render-markdown.nvim',
+		dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' },
+		-- @module 'render-markdown'
+		-- @type render.md.UserConfig
+		opts = {
+			completions = {
+				lsp = {
+					enabled = true,
+				}
+			},
+			heading = {
+
+			}
+		},
+	},
+	{
+		'hedyhli/markdown-toc.nvim',
+		ft = "markdown",
+		cmd = { "Mtoc" },
+		opts = {},
+	},
+    {
+        'sindrets/diffview.nvim',
+        cmd = { "DiffviewOpen", "DiffViewFileHistory" },
 	},
 }
