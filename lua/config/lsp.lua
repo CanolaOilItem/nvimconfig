@@ -9,7 +9,9 @@ local lsps = {
 }
 vim.lsp.enable(lsps)
 
-local capabilities = require("cmp_nvim_lsp").default_capabilities()
+local cmp_capabilities = require("cmp_nvim_lsp").default_capabilities()
+local capabilities_other = vim.lsp.protocol.make_client_capabilities()
+local capabilities = vim.tbl_deep_extend('keep', cmp_capabilities, capabilities_other)
 
 local range_conform = function()
 	require("conform").format({ async = true }, function(err)

@@ -13,3 +13,4 @@
     - [ ] zellij
     - [ ] nvim-tree
 - [ ] mason ensure-installed
+- [x] treesitter highlights

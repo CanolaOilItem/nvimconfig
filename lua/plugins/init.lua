@@ -1,6 +1,7 @@
 return {
 	{
 		"nvim-treesitter/nvim-treesitter",
+		lazy = false,
 		opts = {
 			ensure_installed = {
 				"c",
@@ -16,7 +17,12 @@ return {
 				enable = true,
 				use_languagetree = true,
 			},
+
 		},
+		config = function(_, opts)
+			local configs = require('nvim-treesitter.configs')
+			configs.setup(opts)
+		end,
 	},
 	{
 		"folke/tokyonight.nvim",
