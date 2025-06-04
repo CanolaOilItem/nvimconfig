@@ -23,3 +23,6 @@ vim.opt["relativenumber"] = true
 local map = vim.keymap.set
 map("n", "<C-d>", "<C-d>zz")
 map("n", "<C-u>", "<C-u>zz")
+
+local builtin = require('telescope.builtin')
+map("n", "<leader>fh", builtin.highlights, { desc = "Find Highlights" })

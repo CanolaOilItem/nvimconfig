@@ -139,7 +139,9 @@ return {
 				end,
 			})
 
+
 			require('telescope').setup(opts)
+			vim.api.nvim_set_hl(0, 'TelescopePromptBorder', { fg = "#c7c7c7", bg = "#EEEEEE" })
 		end,
 		opts = {
 			defaults = {
@@ -152,7 +154,22 @@ return {
 						return string.format("%s\t\t%s", tail, parent)
 					end
 				end,
-				file_ignore_patterns = { "^.git/" }
+				file_ignore_patterns = { "^.git/" },
+				prompt_prefix = "   ",
+				selection_caret = " ",
+				entry_prefix = " ",
+				sorting_strategy = "ascending",
+				layout_config = {
+					horizontal = {
+						prompt_position = "top",
+						preview_width = 0.55,
+					},
+					width = 0.87,
+					height = 0.80,
+				},
+				mappings = {
+					n = { ["q"] = require("telescope.actions").close },
+				},
 			},
 			pickers = {
 				find_files = {
@@ -169,6 +186,8 @@ return {
 					},
 				},
 			},
+			extensions_list = { "themes", "terms" },
+			extensions = {},
 		},
 	},
 	{
@@ -339,8 +358,8 @@ return {
 				skip_picker_for_single_result = true,
 				statusline_indicator = true,
 				project_rooter = {
-				    enable = true,
-				    change_cwd = false,
+					enable = true,
+					change_cwd = false,
 				}
 			}
 		},
@@ -386,8 +405,8 @@ return {
 		cmd = { "Mtoc" },
 		opts = {},
 	},
-    {
-        'sindrets/diffview.nvim',
-        cmd = { "DiffviewOpen", "DiffViewFileHistory" },
+	{
+		'sindrets/diffview.nvim',
+		cmd = { "DiffviewOpen", "DiffViewFileHistory" },
 	},
 }

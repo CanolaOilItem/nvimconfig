@@ -1,16 +1,18 @@
 ## TODO: 
-- [ ] markdown lsp
+- [x] markdown lsp
 - [ ] telescope
-- [ ] custom dropdown theme for find files
+    - [ ] custom dropdown theme for find files
 - [ ] telescope pickers for bookmarks -> marks.nvim
 - [ ] nvim-tree
     - [x] auto close on file select
 - [x] conform ??
 - [ ] lsp keybinds 
 - [ ] cscope
+    - [x] cscope_maps.nvim
+    - [ ] auto_build database?
 - [x] auto-brace
 - [ ] colours
     - [ ] zellij
-    - [ ] nvim-tree
-- [ ] mason ensure-installed
+    - [x] nvim-tree
+- [x] mason ensure-installed
 - [x] treesitter highlights
