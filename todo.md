@@ -5,6 +5,7 @@
 - [ ] telescope pickers for bookmarks -> marks.nvim
 - [ ] nvim-tree
     - [x] auto close on file select
+    - [ ] open on file location
 - [x] conform ??
 - [ ] lsp keybinds 
 - [ ] cscope

@@ -192,6 +192,7 @@ return {
 	},
 	{
 		"nvim-tree/nvim-tree.lua",
+		enabled = false,
 		cmd = {
 			"NvimTreeOpen",
 		},
@@ -211,6 +212,22 @@ return {
 				},
 			},
 		},
+	},
+	{
+		'echasnovski/mini.files',
+		version = false,
+		opts = {},
+		keys = function(_, keys)
+			local minifiles_toggle = function(...)
+				if not MiniFiles.close() then MiniFiles.open(...) end
+			end
+
+			local maps = {
+				{ "<C-n>", function() minifiles_toggle(vim.api.nvim_buf_get_name(0)) end, { desc = "Toggle mini files" } }
+			}
+
+			return vim.tbl_deep_extend("force", keys, maps)
+		end,
 	},
 	{
 		"mcauley-penney/visual-whitespace.nvim",
@@ -408,5 +425,37 @@ return {
 	{
 		'sindrets/diffview.nvim',
 		cmd = { "DiffviewOpen", "DiffViewFileHistory" },
+	},
+	{
+		"ThePrimeagen/harpoon",
+		lazy = false,
+		branch = "harpoon2",
+		dependencies = { "nvim-lua/plenary.nvim" },
+		config = function(_, opts)
+			local harpoon = require("harpoon")
+			harpoon:setup()
+
+			local conf = require("telescope.config").values
+			local function toggle_telescope(harpoon_files)
+				local file_paths = {}
+				for _, item in ipairs(harpoon_files.items) do
+					table.insert(file_paths, item.value)
+				end
+
+				require("telescope.pickers").new({}, {
+					prompt_title = "Harpoon",
+					finder = require("telescope.finders").new_table({
+						results = file_paths,
+					}),
+					previewer = conf.file_previewer({}),
+					sorter = conf.generic_sorter({}),
+				}):find()
+			end
+
+			vim.keymap.set("n", "<leader>ha", function() harpoon:list():add() end)
+			vim.keymap.set("n", "<leader>hd", function() harpoon:list():delete() end)
+			vim.keymap.set("n", "<C-e>", function() toggle_telescope(harpoon:list()) end)
+		end,
+
 	},
 }
