@@ -111,7 +111,7 @@ return {
 		keys = function(_, keys)
 			local bt = require("telescope.builtin")
 			local maps = {
-				{ "<leader>ff", bt.find_files,            { "n", "v" } },
+				{ "<leader>ff", bt.find_files,            { "n", "v" },{ desc = {"Find Files"}}},
 				{ "<leader>fw", bt.live_grep,             { "n" } },
 				{ "<leader>fb", bt.buffers,               { "n" } },
 				{ "<leader>fb", bt.buffers,               { "n" } },
@@ -180,10 +180,19 @@ return {
 						-- "--hidden",
 						-- "--no-ignore-vcs",
 						'fd',
+						-- '-u',
+						-- '-H',
 						'-I',
 						'-tf',
 						'-tl',
+						-- '-e h',
+						-- '-e cpp',
+						-- '-e c',
+
+						-- "-E \'**/.ccls-cache/**\'",
+						-- "-E \'**/clangd/**\'",
 					},
+					
 				},
 			},
 			extensions_list = { "themes", "terms" },
@@ -223,7 +232,7 @@ return {
 			end
 
 			local maps = {
-				{ "<C-n>", function() minifiles_toggle(vim.api.nvim_buf_get_name(0)) end, { desc = "Toggle mini files" } }
+				{ "<leader>n", function() minifiles_toggle(vim.api.nvim_buf_get_name(0)) end, { desc = "Toggle mini files" } }
 			}
 
 			return vim.tbl_deep_extend("force", keys, maps)
@@ -260,6 +269,7 @@ return {
 				cpp = { "clang-format" },
 				c = { "clang-format" },
 				h = { "clang-format" },
+				sh = { "beautysh" },
 			},
 			default_format_opts = {
 				lsp_format = "fallback",
@@ -273,6 +283,7 @@ return {
 		"hrsh7th/nvim-cmp",
 		dependencies = {
 			{ "hrsh7th/cmp-nvim-lsp" },
+			{ "hrsh7th/cmp-buffer" },
 		},
 		opts = function()
 			local cmp = require("cmp")
@@ -293,15 +304,16 @@ return {
 					["<C-e>"] = cmp.mapping.abort(),
 					["<CR>"] = cmp.mapping.confirm({ select = false }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
 				}),
-				sources = cmp.config.sources({
-					{ name = "nvim_lsp" },
-					-- { name = 'vsnip' }, -- For vsnip users.
-					-- { name = 'luasnip' }, -- For luasnip users.
-					-- { name = 'ultisnips' }, -- For ultisnips users.
-					-- { name = 'snippy' }, -- For snippy users.
-				}, {
-					{ name = "buffer" },
-				}),
+				sources = cmp.config.sources(
+					{
+						-- primary
+						{ name = "nvim_lsp" },
+					},
+					{
+						--secondary
+						{ name = "buffer" },
+					}
+				),
 			}
 			return opts
 		end,
@@ -365,12 +377,16 @@ return {
 		'dhananjaylatkar/cscope_maps.nvim',
 		dependencies = {
 			'nvim-telescope/telescope.nvim',
-			'ludvicchabant/vim-gutentags',
+			--'ludvicchabant/vim-gutentags',
 		},
 		opts = {
 			skip_input_prompt = true,
 			cscope = {
-				-- db_file = "/home/awojcik/cscope/cscope.out",
+				db_file = {
+					"cscope.out",
+					"cscope.in.out",
+					"cscope.po.out",
+				},
 				picker = "telescope",
 				skip_picker_for_single_result = true,
 				statusline_indicator = true,
@@ -392,6 +408,7 @@ return {
 	},
 	{
 		"ludovicchabant/vim-gutentags",
+		enabled = false,
 		init = function()
 			vim.g.gutentags_modules = { "cscope_maps" } -- This is required. Other config is optional
 			vim.g.gutentags_cscope_build_inverted_index_maps = 1
@@ -402,13 +419,14 @@ return {
 	},
 	{
 		'MeanderingProgrammer/render-markdown.nvim',
+		enabled = true,
 		dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' },
 		-- @module 'render-markdown'
 		-- @type render.md.UserConfig
 		opts = {
 			completions = {
 				lsp = {
-					enabled = true,
+					enabled = false,
 				}
 			},
 			heading = {

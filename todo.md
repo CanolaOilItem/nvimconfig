@@ -3,17 +3,23 @@
 - [ ] telescope
     - [ ] custom dropdown theme for find files
 - [ ] telescope pickers for bookmarks -> marks.nvim
-- [ ] nvim-tree
-    - [x] auto close on file select
-    - [ ] open on file location
+- [ ] mini.files
+    - [ ] auto close on file select
+    - [x] open on file location
+        - [ ] BUG: trying to open tree whilst looking at deleted file fails
 - [x] conform ??
 - [ ] lsp keybinds 
+    - [ ] ccls autocompletions but no diagnostics
+    - vim.lsp.enable/config opts?
 - [ ] cscope
     - [x] cscope_maps.nvim
-    - [ ] auto_build database?
+    - [x] auto_build database?
+        - gutentags was the issue
+        - [ ] get gutentags to work properly?
 - [x] auto-brace
 - [ ] colours
     - [ ] zellij
     - [x] nvim-tree
+    - [ ] cmp
 - [x] mason ensure-installed
 - [x] treesitter highlights

@@ -5,6 +5,7 @@ local lsps = {
 	"lua-language-server",
 	"rust-analyzer",
 	"ccls",
+	"marksman"
 	-- "clangd",
 }
 vim.lsp.enable(lsps)
@@ -12,6 +13,8 @@ vim.lsp.enable(lsps)
 local cmp_capabilities = require("cmp_nvim_lsp").default_capabilities()
 local capabilities_other = vim.lsp.protocol.make_client_capabilities()
 local capabilities = vim.tbl_deep_extend('keep', cmp_capabilities, capabilities_other)
+
+local map = vim.keymap.set
 
 local range_conform = function()
 	require("conform").format({ async = true }, function(err)
@@ -24,7 +27,6 @@ local range_conform = function()
 	end)
 end
 
-local map = vim.keymap.set
 local on_attach = function(_, bufnr)
 	local function opts(desc)
 		return { buffer = bufnr, desc = "LSP " .. desc }
@@ -64,3 +66,8 @@ vim.api.nvim_create_autocmd("LspAttach", {
 		end
 	end,
 })
+
+
+-- TODO: Enable diagnostics based on filetype
+--
+vim.diagnostic.enable(true)
