@@ -192,7 +192,6 @@ return {
 						-- "-E \'**/.ccls-cache/**\'",
 						-- "-E \'**/clangd/**\'",
 					},
-					
 				},
 			},
 			extensions_list = { "themes", "terms" },
@@ -206,7 +205,7 @@ return {
 			"NvimTreeOpen",
 		},
 		keys = function(_, keys)
-			local tree = require("nvim-tree")
+			-- local tree = require("nvim-tree")
 			local api = require("nvim-tree.api")
 			local maps = {
 				{ "<C-N>", api.tree.toggle, { "n" }, { desc = "Toggle Nvim Tree" } },
@@ -260,8 +259,6 @@ return {
 			"<leader>lf",
 		},
 
-		---@module "conform"
-		---@type conform.setupOpts
 		opts = {
 			formatters_by_ft = {
 				lua = { "stylua" },
@@ -308,6 +305,7 @@ return {
 					{
 						-- primary
 						{ name = "nvim_lsp" },
+						{ name = "lazydev", group_index = 0, },
 					},
 					{
 						--secondary
@@ -446,10 +444,11 @@ return {
 	},
 	{
 		"ThePrimeagen/harpoon",
+		enabled = false,
 		lazy = false,
 		branch = "harpoon2",
 		dependencies = { "nvim-lua/plenary.nvim" },
-		config = function(_, opts)
+		config = function(_, _)
 			local harpoon = require("harpoon")
 			harpoon:setup()
 
@@ -476,4 +475,21 @@ return {
 		end,
 
 	},
+	{
+    "folke/lazydev.nvim",
+    ft = "lua", -- only load on lua files
+    opts = {
+      library = {
+        -- See the configuration section for more details
+        -- Load luvit types when the `vim.uv` word is found
+        { path = "${3rd}/luv/library", words = { "vim%.uv" } },
+      },
+    },
+  },
+  {
+	  dir = "~/plugin_dev/cscope_switch",
+	  dev = true,
+	  opts = {},
+	  -- optional = true,
+  },
 }
