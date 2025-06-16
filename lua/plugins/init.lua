@@ -230,8 +230,18 @@ return {
 				if not MiniFiles.close() then MiniFiles.open(...) end
 			end
 
+			local open_on_file = function()
+				local buf_name = vim.api.nvim_buf_get_name(0)
+				if vim.uv.fs_stat(buf_name)
+				then
+					minifiles_toggle(buf_name)
+				else
+					minifiles_toggle()
+				end
+			end
+
 			local maps = {
-				{ "<leader>n", function() minifiles_toggle(vim.api.nvim_buf_get_name(0)) end, { desc = "Toggle mini files" } }
+				{ "<leader>n", open_on_file, { desc = "Toggle mini files" } }
 			}
 
 			return vim.tbl_deep_extend("force", keys, maps)
