@@ -46,6 +46,12 @@ vim.cmd[[colorscheme tokyonight]]
 vim.opt.fillchars = {
 	eob = ' ',
 }
+vim.opt["shiftwidth"] = 4
+vim.opt["tabstop"] = 8
+vim.opt["softtabstop"] = 0
+vim.opt.expandtab = true
+vim.opt.smarttab = true
+
 vim.api.nvim_set_hl(0, 'WinSeparator', { fg = "#c7c7c7", bg = ""})
 vim.api.nvim_set_hl(0, 'NvimTreeWinSeparator', { fg = "#c7c7c7", bg = ""})
 vim.api.nvim_set_hl(0, 'LineNr', { fg = "#FFFFFF", bg = ""})

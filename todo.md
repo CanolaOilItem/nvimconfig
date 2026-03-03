@@ -6,7 +6,7 @@
 - [ ] mini.files
     - [ ] auto close on file select
     - [x] open on file location
-        - [ ] BUG: trying to open tree whilst looking at deleted file fails
+        - [x] BUG: trying to open tree whilst looking at deleted file fails
 - [x] conform ??
 - [ ] lsp keybinds 
     - [ ] ccls autocompletions but no diagnostics

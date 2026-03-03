@@ -28,3 +28,7 @@ local builtin = require('telescope.builtin')
 map("n", "<leader>fh", builtin.highlights, { desc = "Find Highlights" })
 
 map("n", "<leader>ld", function() vim.diagnostic.enable(not vim.diagnostic.is_enabled()) end, { desc = "Toggle Diagnostics" })
+
+
+-- cscope quickswitch
+map("n", "<leader>cq", "")

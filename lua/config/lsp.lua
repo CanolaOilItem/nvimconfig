@@ -5,8 +5,13 @@ local lsps = {
 	"lua-language-server",
 	"rust-analyzer",
 	"ccls",
-	"marksman"
+	"marksman",
+	"pyright",
+	"lemminx",
+--	"tailwindcss",
+	"emmet_ls",
 	-- "clangd",
+    "tinymist",
 }
 vim.lsp.enable(lsps)
 
@@ -54,6 +59,16 @@ for _, lsp in ipairs(lsps) do
 		on_attach = on_attach,
 	})
 end
+
+-- vim.lsp.config("pyright", {
+-- 	capabilities = vim.tbl_deep_extend("force", capabilities, {
+-- 		textDocument = {
+-- 			codeAction = {
+-- 				createtypestub = true
+-- 			}
+-- 		}
+-- 	} )
+-- })
 
 -- Autocompletion
 vim.api.nvim_create_autocmd("LspAttach", {
